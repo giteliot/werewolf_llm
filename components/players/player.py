@@ -9,16 +9,21 @@ class Player:
 
     def get_type(self):
         return self.__class__.__name__
-    
-    def vote(self, players: List[Player]) -> Player:
+
+    def discuss(self, players) -> str:
         for p in random.sample(players, len(players)):
-            if p.name() != self.name:
+            if p.name != self.name:
+                return f"I think it's {p.name}"
+    
+    def vote(self, players):
+        for p in random.sample(players, len(players)):
+            if p.name != self.name:
                 return p
 
 class Werewolf(Player):
     def __init__(self, name: str):
         super().__init__(name)
-    def kill_player(self, players: List[Player]) -> str:
+    def kill_player(self, players) -> str:
         for p in random.sample(players, len(players)):
             if p.get_type() != 'Werewolf':
                 return p
@@ -31,20 +36,21 @@ class Seer(Player):
     def __init__(self, name: str):
         super().__init__(name)
 
-    def reveal(self, players: List[Player]) -> str:
-        revealed = players[0]
-        self.events.append(f"You (Seer) revealed: {revealed.name} is a {revealed.get_type()}")
-        return revealed
+    def reveal(self, players) -> str:
+        for p in random.sample(players, len(players)):
+            if p.name != self.name:
+                self.events.append(f"You (Seer) revealed: {p.name} is a {p.get_type()}")
+                return p
 
 class Doctor(Player):
     def __init__(self, name: str):
         super().__init__(name)
-    def save_player(self, players: List[Player]) -> str:
+    def save_player(self, players) -> str:
         for p in random.sample(players, len(players)):
             if p.get_type() != 'Doctor':
                 return p
 
-def create_player(name: str, role: str) -> Player:
+def create_player(name: str, role: str):
     if role == 'Werewolf':
         return Werewolf(name)
     elif role == 'Villager':

@@ -6,5 +6,9 @@ if __name__ == "__main__":
         'Villager','Villager','Villager',
         'Seer','Doctor'])
 
-    for i in range(len(game.state_handlers)):
-        game.play_step()
+    
+    for _ in range(1000):
+        out = game.play_step()
+        if out < 0:
+            break
+

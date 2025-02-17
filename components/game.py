@@ -148,6 +148,3 @@ class Game:
 
             if self.check_win_condition() > 0:
                 self.state = -17
-        
-    # TODO
-    # _d1 is discussing

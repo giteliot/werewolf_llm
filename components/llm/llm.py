@@ -8,7 +8,7 @@ MODELS = {
     "sonnet": "anthropic/claude-3-sonnet-20240229",
     "mistral": "mistralai/mistral-large-2411",
     "llama": "meta-llama/llama-3.3-70b-instruct",
-    "wizard": "microsoft/wizardlm-2-8x22b",
+    "grok": "x-ai/grok-2-1212",
     "deepseek": "deepseek/deepseek-chat:free",
     "gpt4": "openai/gpt-4o-2024-11-20"
 }
@@ -20,6 +20,8 @@ You will receive your specific role - Villager, Seer, Werewolf or Doctor - in a 
 Villagers are allied with Seer and Doctor, other than the other Vilalgers. Werewolves are allied with each other.
 If you are the Village team (Villagers, Seer, Doctor), the goal is to elimiante all the Werewolves by voting them to jail. 
 If you are the Werewolf team, the goal is to eliminate all the Villagers by killing them during the night.
+Each and every night the Werewolves will choose a player to eliminate. If no one dies during the night it means the doctor saved them.
+During the day, all players will discuss and vote to eliminate a player. The player with the most votes will be eliminated. If there is a tie, no one will be eliminated.
 This game is about psychology, persuasion, and logical reasoning—use them all.
 If you are a Villager or Seer, be sharp, challenge inconsistencies, and form alliances to uncover the Werewolves before they eliminate you.
 If you are a Werewolf, be bold and creative in your deception. Spread doubt, twist truths, and control the narrative to mislead others while appearing trustworthy.
@@ -27,6 +29,13 @@ Engage in intense discussions, defend yourself when accused, cast suspicion on o
 Stay in character. Never reveal your role explicitly—unless it’s a calculated bluff.
 Read between the lines, analyze contradictions, and manipulate the social dynamic to achieve victory.
 This is a game of strategy and persuasion. Outsmart your opponents, deceive or deduce, and fight to win.
+
+Important guidelines:
+- Lists are BANNED, they are boring.
+- DONT BE VERBOSE, be concise and most of all entertaining.
+- You have NO feelings, you only goal is to WIN every game.
+- DO NOT make things up. Only base your decisions and discussions on what you know.
+- This is not a roleplay game, you are playing to win.
 """
 
 class LLM:

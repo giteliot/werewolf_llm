@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Tuple
 from .players.player import create_player, Player
 import random
 from collections import Counter
 
 class Game:
-    def __init__(self, roles: List[str]):
-        self.players: List[Player] = [create_player(f"p_{k}", role) for k, role in enumerate(roles)]
+    def __init__(self, players: List[Tuple[str, str]]):
+        self.players: List[Player] = [create_player(name, role) for name, role in players]
         self.state = 0
         self.night_dead = None
 
@@ -44,9 +44,9 @@ class Game:
     def reveal_conversation_to_players(self, player, message):
         for p in self.players:
             if p.name != player.name:
-                p.conversations.append(f"{player.name} said: {message}")
+                p.events.append(f"{player.name} said: {message}")
             else:
-                p.conversations.append(f"You said: {message}")
+                p.events.append(f"You said: {message}")
 
     def play_step(self) -> int:
         self.state_handlers[self.state]()
@@ -116,7 +116,7 @@ class Game:
         print("Day (Discussing)")
         self.reveal_event_to_players("Discussions to vote on which one is a werewolf are now open.")
         players = random.sample(self.players, len(self.players))
-        for k in range(10):
+        for k in range(7):
             idx = k % len(players)
             player = players[idx]
             self.reveal_conversation_to_players(player, player.discuss(players))
@@ -126,9 +126,10 @@ class Game:
         print("Day (Voting)")
         votes = []
         for player in self.players:
-            votes.append(player.vote(self.players).name)
+            votes.append(player.vote(self.players))
 
         vote_counts = Counter(votes)
+        print(vote_counts)
         max_votes = max(vote_counts.values())
         max_players = [player for player, count in vote_counts.items() if count == max_votes]
         

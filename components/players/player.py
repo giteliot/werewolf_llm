@@ -1,24 +1,41 @@
 import random
 from typing import List
+from components.llm.llm import LLM
+from components.players.prompts import get_discuss_prompt, get_vote_prompt
 
 class Player:
     def __init__(self, name: str):
         self.name = name
+        self.brain = LLM(name)
         self.events = []
-        self.conversations = []
 
     def get_type(self):
         return self.__class__.__name__
 
     def discuss(self, players) -> str:
-        for p in random.sample(players, len(players)):
-            if p.name != self.name:
-                return f"I think it's {p.name}"
+        prompt = get_discuss_prompt(
+            self.events, 
+            self.name, 
+            self.get_type(), 
+            [p.name for p in players if p.name != self.name]
+        )
+        out = self.brain.chat_completion(prompt)
+        print(f"""> {self.name}
+        {out}
+        """)
+        return out
+
     
     def vote(self, players):
-        for p in random.sample(players, len(players)):
-            if p.name != self.name:
-                return p
+        prompt = get_vote_prompt(
+            self.events, 
+            self.name, 
+            self.get_type(), 
+            [p.name for p in players if p.name != self.name]
+        )
+        out = self.brain.chat_completion(prompt)
+        print(self.name, out)
+        return out
 
 class Werewolf(Player):
     def __init__(self, name: str):

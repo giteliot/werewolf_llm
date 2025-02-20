@@ -2,6 +2,7 @@ from typing import List, Tuple
 from .players.player import create_player, Player
 import random
 from collections import Counter
+from components.players.utils import get_role_from_name
 
 class Game:
     def __init__(self, players: List[Tuple[str, str]]):
@@ -38,10 +39,14 @@ class Game:
         self.players = [player for player in self.players if player.name != player_name]
 
     def reveal_event_to_players(self, event_description):
+        print()
+        print(event_description)
         for p in self.players:
             p.events.append(event_description)
 
     def reveal_conversation_to_players(self, player, message):
+        print()
+        # print(f"{player.name} said: {message}")
         for p in self.players:
             if p.name != player.name:
                 p.events.append(f"{player.name} said: {message}")
@@ -69,51 +74,42 @@ class Game:
         return 0
 
     def _n0(self):
-        print()
-        print(f"The night falls.")
-        print("Night (Werewolves Vote)")
+        self.reveal_event_to_players("The night falls. Everyone goes to sleep. Werewolves wake up. Who do you want to kill?")
         werewolf = random.sample(self.get_players('Werewolf'), 1)[0]
         dead = werewolf.kill_player(self.players)
-        print(f"Werewvolf {werewolf.name} tries to kill {dead.name}")
         self.night_dead = dead
 
     def _n1(self):
-        print("Night (Seer Votes)")
+        self.reveal_event_to_players("The werewolves made their choise. Seer, wake up. Who do you want to reveal?")
         seer = self.get_players('Seer')
         if len(seer) < 1:
             return
         seer = seer[0]
-        revealed = seer.reveal(self.players)
-        print(f"Seer revealed: {revealed.name} is {revealed.get_type()}")
+        seer.reveal(self.players)
 
     def _n2(self):
-        print("Night (Doctor Votes)")
+        self.reveal_event_to_players("The Seer made their choise. Doctor, wake up. Who do you want to save?")
         doc = self.get_players('Doctor')
         if len(doc) < 1:
             return
 
         doc = doc[0]
         saved = doc.save_player(self.players)
+
         if self.night_dead == saved:
-            print(f"Doctor tried to save {saved.name}")
             self.night_dead = None
-        else:
-            print(f"Doctor tried to save {saved.name} but he wasn't sick.")
 
     def _d0(self):
-        print()
-        print("Day (Revealing the dead)")
-        self.reveal_event_to_players("The night is over. It's now morning.")
+        self.reveal_event_to_players("The day rises. Everyone wakes up.")
         if self.night_dead:
-            self.remove_player(self.night_dead.name)
-            self.reveal_event_to_players(f"{self.night_dead.name} was found dead. He was a {self.night_dead.get_type()}.")
+            self.reveal_event_to_players(f"{self.night_dead} was found dead. He was a {get_role_from_name(self.night_dead, self.players)}.")
+            self.remove_player(self.night_dead)
             if self.check_win_condition() < 0:
                 self.state = -13
         else:
             self.reveal_event_to_players("Nobody died last night.")
 
     def _d1(self):
-        print("Day (Discussing)")
         self.reveal_event_to_players("Discussions to vote on which one is a werewolf are now open.")
         players = random.sample(self.players, len(self.players))
         for k in range(7):
@@ -123,7 +119,7 @@ class Game:
         
 
     def _d2(self):
-        print("Day (Voting)")
+        self.reveal_event_to_players("It's now time to vote who to send to jail.")
         votes = []
         for player in self.players:
             votes.append(player.vote(self.players))
@@ -134,17 +130,10 @@ class Game:
         max_players = [player for player, count in vote_counts.items() if count == max_votes]
         
         if len(max_players) > 1:
-            print("No one was sent to jail.")
             self.reveal_event_to_players(f"There was a tie between {', '.join(max_players)}. Not one was sent to jail today.")
         else:
             voted = max_players[0]
-            role = None
-            for p in self.players:
-                if p.name == voted:
-                    role = p.get_type()
-                    break
-            print(f"{voted} was sent to jail. He was a {role}.")
-            self.reveal_event_to_players(f"{voted} was sent to jail. He was a {role}.")
+            self.reveal_event_to_players(f"{voted} was sent to jail. He was a {get_role_from_name(voted, self.players)}.")
             self.remove_player(voted)
 
             if self.check_win_condition() > 0:

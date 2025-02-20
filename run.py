@@ -1,4 +1,5 @@
 import random
+from datetime import datetime
 from components.game import Game
 from components.llm.llm import MODELS
 
@@ -9,7 +10,8 @@ if __name__ == "__main__":
         'Villager','Villager','Villager',
         'Seer','Doctor']
 
-    game = Game(list(zip(names, roles)))
+    logs = []
+    game = Game(list(zip(names, roles)), logs)
 
     # TODO create team werewolf and team village
     # based on output, store who won and who lost
@@ -17,11 +19,13 @@ if __name__ == "__main__":
     for _ in range(100):
         out = game.play_step()
         if out < 0:
-            with open('./results/game_result.txt', 'w') as f:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+            with open(f'./results/{timestamp}.txt', 'w') as f:
                 winner = "Werewolves" if out == -12 else "Villagers"
-                f.write(f"Game won by: {winner}\n")
+                logs.append(f"Game won by: {winner}")
                 for name, role in zip(names, roles):
-                    f.write(f"{name}: {role}\n")
+                    logs.append(f"{name}: {role}")
+                f.write("\n".join(logs))
 
             print(f"the roles were: {list(zip(names, roles))}")
             break

@@ -5,10 +5,11 @@ from collections import Counter
 from components.players.utils import get_role_from_name
 
 class Game:
-    def __init__(self, players: List[Tuple[str, str]]):
+    def __init__(self, players: List[Tuple[str, str]], logs: List[str] = []):
         self.players: List[Player] = [create_player(name, role) for name, role in players]
         self.state = 0
         self.night_dead = None
+        self.logs = logs
 
         self.state_handlers = {
             0: self._n0,
@@ -41,12 +42,16 @@ class Game:
     def reveal_event_to_players(self, event_description):
         print()
         print(event_description)
+        self.logs.append(event_description)
+
         for p in self.players:
             p.events.append(event_description)
 
     def reveal_conversation_to_players(self, player, message):
         print()
-        # print(f"{player.name} said: {message}")
+        print(f"{player.name} says: {message}")
+        self.logs.append(f"{player.name} says: {message}")
+
         for p in self.players:
             if p.name != player.name:
                 p.events.append(f"{player.name} said: {message}")
@@ -68,6 +73,10 @@ class Game:
 
         village = len(self.players)-len(werewolves)
         if village == 0:
+            print("Werewolves win!")
+            return -1
+
+        if len(self.players) == 2:
             print("Werewolves win!")
             return -1
         

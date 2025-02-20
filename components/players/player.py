@@ -2,7 +2,7 @@ import random
 from typing import List
 from components.llm.llm import LLM
 from components.players.prompts import get_discuss_prompt, get_vote_prompt, get_kill_prompt, get_reveal_prompt, get_save_prompt
-from components.players.utils import get_role_from_name
+from components.players.utils import get_role_from_name, sanitize_name
 
 class Player:
     def __init__(self, name: str):
@@ -21,9 +21,6 @@ class Player:
             [p.name for p in players if p.name != self.name]
         )
         out = self.brain.chat_completion(prompt)
-        print(f"""> {self.name}
-        {out}
-        """)
         return out
 
     
@@ -35,8 +32,8 @@ class Player:
             [p.name for p in players if p.name != self.name]
         )
         out = self.brain.chat_completion(prompt)
-        print(self.name, out)
-        return out
+        voted =  sanitize_name(out, players)
+        return voted
 
 class Werewolf(Player):
     def __init__(self, name: str):
@@ -52,11 +49,7 @@ class Werewolf(Player):
             [p.name for p in players if p.name != self.name]
         )
         out = self.brain.chat_completion(prompt).lower()
-        kill_name = None
-        for p in players:
-            if p.name in out:
-                kill_name = p.name
-                break
+        kill_name =  sanitize_name(out, players)
 
         if kill_name is not None:
             return kill_name
@@ -91,12 +84,7 @@ class Seer(Player):
         )
 
         out = self.brain.chat_completion(prompt).lower()
-        reveal_name = None
-        for p in players:
-            if p.name in out:
-                reveal_name = p.name
-                break
-
+        reveal_name = sanitize_name(out, players)
         if reveal_name is not None:
             self.revealed[reveal_name] = get_role_from_name(reveal_name, players)
             return reveal_name
@@ -115,11 +103,7 @@ class Doctor(Player):
             [p.name for p in players if p.name != self.name]
         )
         out = self.brain.chat_completion(prompt).lower()
-        save_name = None
-        for p in players:
-            if p.name in out:
-                save_name = p.name
-                break
+        save_name = sanitize_name(out, players)
 
         if save_name is not None:
             return save_name

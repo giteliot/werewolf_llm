@@ -7,6 +7,9 @@ def get_role_from_name(name, players):
     return role
 
 def sanitize_name(name, players):
+    name = name.lower()
+    if "skip" in name:
+        return "Skip"
     for p in players:
         if p.name in name:
             return p.name

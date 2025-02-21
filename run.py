@@ -4,17 +4,14 @@ from components.game import Game
 from components.llm.llm import MODELS
 
 if __name__ == "__main__":
-    names = random.sample(list(MODELS.keys()), 7)
+    names = random.sample(list(MODELS.keys()), len(MODELS.keys()))
     roles = [
-        'Werewolf','Werewolf',
-        'Villager','Villager','Villager',
+        'Werewolf',
+        'Villager','Villager',
         'Seer','Doctor']
 
     logs = []
     game = Game(list(zip(names, roles)), logs)
-
-    # TODO create team werewolf and team village
-    # based on output, store who won and who lost
     
     for _ in range(100):
         out = game.play_step()

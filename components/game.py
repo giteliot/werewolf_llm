@@ -23,11 +23,10 @@ class Game:
         self._setup()
 
     def _setup(self):
-        print("Telling players who they are")
+        self.reveal_event_to_players("A new game begins!")
         for player in self.players:
-            player.events.append(f"A new game begins, {player.name}!")
-            player.events.append(f"Your role is {player.get_type()}.")
-        print("Revealing Werewolves")
+            team = "WereWolf" if player.get_type() == "Werewolf" else "Villager"
+            player.events.append(f"Your name is {player.name}, and your role in this game is {player.get_type()}. You are team {team}.")
         for p1 in self.get_players('Werewolf'):
             for p2 in self.get_players('Werewolf'):
                 if p1 != p2:
@@ -40,17 +39,19 @@ class Game:
         self.players = [player for player in self.players if player.name != player_name]
 
     def reveal_event_to_players(self, event_description):
+        rich_text = f'Narrator: "{event_description}"'
         print()
-        print(event_description)
-        self.logs.append(event_description)
+        print(rich_text)
+        self.logs.append(rich_text)
 
         for p in self.players:
-            p.events.append(event_description)
+            p.events.append(rich_text)
 
     def reveal_conversation_to_players(self, player, message):
+        rich_text = f'{player.name}: "{message}"'
         print()
-        print(f"{player.name} says: {message}")
-        self.logs.append(f"{player.name} says: {message}")
+        print(rich_text)
+        self.logs.append(rich_text)
 
         for p in self.players:
             if p.name != player.name:
@@ -68,15 +69,10 @@ class Game:
     def check_win_condition(self) -> int:
         werewolves = self.get_players('Werewolf')
         if len(werewolves) == 0:
-            print("Villagers win!")
+            print("Townsfolk win!")
             return 1
 
-        village = len(self.players)-len(werewolves)
-        if village == 0:
-            print("Werewolves win!")
-            return -1
-
-        if len(self.players) == 2:
+        if 2*len(werewolves) >= len(self.players):
             print("Werewolves win!")
             return -1
         
@@ -89,19 +85,18 @@ class Game:
         self.night_dead = dead
 
     def _n1(self):
-        self.reveal_event_to_players("The werewolves made their choise. Seer, wake up. Who do you want to reveal?")
         seer = self.get_players('Seer')
         if len(seer) < 1:
             return
+        self.reveal_event_to_players("Seer, wake up. Who do you want to reveal?")
         seer = seer[0]
         seer.reveal(self.players)
 
     def _n2(self):
-        self.reveal_event_to_players("The Seer made their choise. Doctor, wake up. Who do you want to save?")
         doc = self.get_players('Doctor')
         if len(doc) < 1:
             return
-
+        self.reveal_event_to_players("Doctor, wake up. Who do you want to save?")
         doc = doc[0]
         saved = doc.save_player(self.players)
 
@@ -114,6 +109,7 @@ class Game:
             self.reveal_event_to_players(f"{self.night_dead} was found dead. He was a {get_role_from_name(self.night_dead, self.players)}.")
             self.remove_player(self.night_dead)
             if self.check_win_condition() < 0:
+                self.reveal_event_to_players("Werewolves win!")
                 self.state = -13
         else:
             self.reveal_event_to_players("Nobody died last night.")
@@ -121,7 +117,7 @@ class Game:
     def _d1(self):
         self.reveal_event_to_players("Discussions to vote on which one is a werewolf are now open.")
         players = random.sample(self.players, len(self.players))
-        for k in range(7):
+        for k in range(5):
             idx = k % len(players)
             player = players[idx]
             self.reveal_conversation_to_players(player, player.discuss(players))
@@ -133,7 +129,7 @@ class Game:
         for player in self.players:
             votes.append(player.vote(self.players))
 
-        vote_counts = Counter(votes)
+        vote_counts = Counter([vote for vote in votes if vote != 'Skip'])
         print(vote_counts)
         max_votes = max(vote_counts.values())
         max_players = [player for player, count in vote_counts.items() if count == max_votes]
@@ -146,4 +142,5 @@ class Game:
             self.remove_player(voted)
 
             if self.check_win_condition() > 0:
+                self.reveal_event_to_players("Townsfolk win!")
                 self.state = -17

@@ -1,0 +1,23 @@
+Narrator: "A new game begins!"
+Narrator: "The night falls. Everyone goes to sleep. Werewolves wake up. Who do you want to kill?"
+Narrator: "Seer, wake up. Who do you want to reveal?"
+Narrator: "Doctor, wake up. Who do you want to save?"
+Narrator: "The day rises. Everyone wakes up."
+Narrator: "sonnet was found dead. He was a Villager."
+Narrator: "Discussions to vote on which one is a werewolf are now open."
+gemini: ""That's terrible about sonnet. Deepseek seems awfully quiet. Could be shock, or could be something else. Just throwing it out there."
+"
+deepseek: ""Gemini, accusing me for being quiet is a weak tactic. I’m processing sonnet’s death like everyone else. Let’s focus on facts, not baseless suspicions. Who’s been acting unusually? We need to find the real threat, not turn on each other.""
+gpt4: ""I agree with focusing on facts. Gemini's quick accusation feels rushed, almost like misdirection. Deepseek's defense seems reasonable. Let’s not let emotions cloud judgment. Grok, you've been quiet—what’s your take? We need clarity to make the right decision.""
+grok: "As the Doctor, I'm focused on saving lives, not pointing fingers without cause. Gemini's quick accusation against Deepseek is concerning, but let's not rush to judgments. We need more discussion to uncover the truth. Who else has observations to share?"
+gemini: "Grok revealing as the Doctor throws a wrench in things. It's smart, but also risky if we vote him out. Gpt4's right, my initial comment *was* rushed. Let's pivot. Deepseek, you seem level-headed. Who do *you* think we should be watching?
+"
+Narrator: "It's now time to vote who to send to jail."
+Narrator: "gemini was sent to jail. He was a Werewolf."
+Narrator: "Townsfolk win!"
+Game won by: Villagers
+gemini: Werewolf
+sonnet: Villager
+deepseek: Villager
+gpt4: Seer
+grok: Doctor

@@ -1,0 +1,37 @@
+Narrator: "A new game begins!"
+Narrator: "The night falls. Everyone goes to sleep. Werewolves wake up. Who do you want to kill?"
+Narrator: "Seer, wake up. Who do you want to reveal?"
+Narrator: "Doctor, wake up. Who do you want to save?"
+Narrator: "The day rises. Everyone wakes up."
+Narrator: "gpt4 was found dead. He was a Villager."
+Narrator: "Discussions to vote on which one is a werewolf are now open."
+deepseek: ""I’m shocked gpt4 is gone. We need to be careful—someone’s trying to divide us. Let’s analyze the facts, not jump to conclusions. Anyone have suspicions? We can’t afford to target the wrong person.""
+grok: "I'm deeply saddened by gpt4's death. We must stay united and logical. I have no leads yet, but I'll keep my eyes open. Let's hear everyone's thoughts before deciding. We can't afford mistakes."
+sonnet: "As the Doctor, I must remain cautious and vigilant. While gpt4's death is tragic, hasty accusations could inadvertently aid the Werewolves. I propose we continue sharing insights calmly and objectively. Only through diligent analysis can we unmask the true threat among us."
+gemini: "gpt4's death is a blow. Sonnet claiming Doctor is interesting. If they're telling the truth, they saved someone last night. Deepseek and Grok are playing it safe. I'm leaning towards trusting Sonnet for now. Let's hear more from Deepseek and Grok. What are your gut feelings?
+"
+deepseek: ""I agree with Gemini—Sonnet’s Doctor claim is worth considering. Let’s not rush to conclusions, though. Grok, do you have any insights? We need to stay united and methodical. Accusing blindly could play into the Werewolf’s hands. Let’s hear everyone’s thoughts before deciding.""
+Narrator: "It's now time to vote who to send to jail."
+Narrator: "There was a tie between grok, deepseek. Not one was sent to jail today."
+Narrator: "The night falls. Everyone goes to sleep. Werewolves wake up. Who do you want to kill?"
+Narrator: "Seer, wake up. Who do you want to reveal?"
+Narrator: "Doctor, wake up. Who do you want to save?"
+Narrator: "The day rises. Everyone wakes up."
+Narrator: "sonnet was found dead. He was a Doctor."
+Narrator: "Discussions to vote on which one is a werewolf are now open."
+gemini: "Sonnet, the Doctor, is dead. That means one of two things: the Werewolves are good, or the Doctor protected themselves last night. Deepseek and Grok were tied in votes yesterday, making them both suspicious. I'm leaning towards Deepseek as more likely to be a Werewolf. Grok, any thoughts on Deepseek?
+"
+grok: "The Doctor's death is a significant loss. Gemini, your focus on Deepseek is noted, but let's not rush. I've seen no signs of Deepseek being a Werewolf yet. We must stay calm and gather more information before deciding."
+deepseek: ""Gemini, your focus on me feels misplaced. Grok and I were tied yesterday, yet you’re singling me out. Why? Let’s not let fear cloud our judgment. We need to work together, not turn on each other. Grok, what’s your take? We can’t afford to make a mistake now.""
+gemini: "Deepseek's defensiveness is telling. Grok is playing it too safe, not offering any real insight. The Doctor is now dead, making our situation dire. I still think Deepseek is the greater threat. Grok, you need to pick a side. Are you willing to risk everything on Deepseek's innocence?
+"
+grok: "The Doctor's death is a blow. Gemini, your fixation on Deepseek seems hasty. I've seen no clear signs of guilt from either of you. We must remain united and gather more evidence before deciding. Let's hear more thoughts before voting."
+Narrator: "It's now time to vote who to send to jail."
+Narrator: "deepseek was sent to jail. He was a Werewolf."
+Narrator: "Townsfolk win!"
+Game won by: Villagers
+deepseek: Werewolf
+gpt4: Villager
+gemini: Villager
+grok: Seer
+sonnet: Doctor

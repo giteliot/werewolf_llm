@@ -18,7 +18,7 @@ def get_vote_prompt(events, name, role, alive_players):
     Remember that you are called {name}, and you are a {role}.
     It's now time to vote.
     Who do you vote to eliminate? Reply EXCLUSIVELY with the name of the player you are voting out.
-    YOU CAN ONLY VOTE ONE NAME AMONG {alive_players}. Do not change any letter of the name, not even capitalization, and do not add any characte, INCLUDING SPECIAL CHARACTERS LIKE ESCAPED ONES.
+    You can vote the following players {alive_players}, or you can skip the vote. Do not change any letter of the name, not even capitalization, and do not add any character. If you want to skip just reply with 'Skip'.
     You vote is:
     """
 

@@ -12,10 +12,20 @@ class WerewolfGame:
         self.font = pygame.font.SysFont("Arial", FONT_SIZE)
         self.clock = pygame.time.Clock()
         
+        # Load background images
         self.background_day = pygame.image.load('./img/background_day.png').convert()
         self.background_day = pygame.transform.scale(self.background_day, (WIDTH, HEIGHT))
         self.background_night = pygame.image.load('./img/background_night.png').convert()
         self.background_night = pygame.transform.scale(self.background_night, (WIDTH, HEIGHT))
+        
+        # Load player images
+        self.player_images = {}
+        for player, size in zip(
+            ["deepseek", "grok", "sonnet", "gemini", "gpt4"], 
+            [(128, 360), (196, 360), (128, 340), (128, 360), (128, 360)]
+        ):
+            image = pygame.image.load(f'./img/{player}.png').convert_alpha()
+            self.player_images[player] = pygame.transform.scale(image, size)
         
         self.game_log = load_game_log(log_file_path)
         self.setup_players()
@@ -27,17 +37,6 @@ class WerewolfGame:
         self.num_players = len(self.players)
         self.circle_center = (WIDTH // 2, HEIGHT // 2 + 150)
         self.circle_radius = 200
-        self.player_positions = self.compute_player_positions()
-        
-    def compute_player_positions(self):
-        positions = {}
-        angle_offset = -math.pi / 2
-        for i, name in enumerate(self.players):
-            angle = angle_offset + (2 * math.pi * i / self.num_players)
-            x = self.circle_center[0] + self.circle_radius * math.cos(angle)
-            y = self.circle_center[1] + self.circle_radius * math.sin(angle) - 100
-            positions[name.lower()] = (int(x), int(y))
-        return positions
     
     def setup_game_state(self):
         self.current_line_index = 0
@@ -68,24 +67,28 @@ class WerewolfGame:
             y_offset += self.font.get_linesize()
             
     def draw_players(self):
-        for name, pos in self.player_positions.items():
-            pygame.draw.circle(self.screen, PLAYER_COLOR, pos, PLAYER_RADIUS)
+        for name, pos in player_positions.items():
+            # Get the player image
+            player_image = self.player_images[name]
+            # Create a rect for positioning the image centered on the position
+            image_rect = player_image.get_rect(center=pos)
+            # Draw the image
+            self.screen.blit(player_image, image_rect)
+            # Draw the name below the image
             name_text = self.font.render(name.capitalize(), True, WHITE)
-            text_rect = name_text.get_rect(center=(pos[0], pos[1] + PLAYER_RADIUS + 15))
+            text_rect = name_text.get_rect(center=(pos[0], pos[1] - 60))  # Adjust the 40 value as needed
             self.screen.blit(name_text, text_rect)
             
     def get_text_box_position(self, speaker):
         if speaker.lower() == "narrator":
-            box_width = 400
-            box_height = 100
+            box_width = NBOX_WIDTH
+            box_height = NBOX_HEIGHT
             box_x = WIDTH // 2 - box_width // 2
-            box_y = HEIGHT // 2 - box_height // 2
+            box_y = 10
         else:
-            pos = self.player_positions.get(speaker.lower(), (WIDTH // 2, HEIGHT // 2))
-            box_width = 300
-            box_height = 80
-            box_x = pos[0] - box_width // 2
-            box_y = pos[1] - PLAYER_RADIUS - box_height - 10
+            box_x, box_y = text_positions[speaker.lower()]
+            box_width = TBOX_WIDTH
+            box_height = TBOX_HEIGHT
             
         return pygame.Rect(box_x, box_y, box_width, box_height)
     

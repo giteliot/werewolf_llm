@@ -104,7 +104,7 @@ class Game:
             self.night_dead = None
 
     def _d0(self):
-        self.reveal_event_to_players("The day rises. Everyone wakes up.")
+        self.reveal_event_to_players("The sun rises. Everyone wakes up.")
         if self.night_dead:
             self.reveal_event_to_players(f"{self.night_dead} was found dead. He was a {get_role_from_name(self.night_dead, self.players)}.")
             self.remove_player(self.night_dead)

@@ -18,7 +18,7 @@ if __name__ == "__main__":
         if out < 0:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M")
             with open(f'./results/{timestamp}.txt', 'w') as f:
-                winner = "Werewolves" if out == -12 else "Villagers"
+                winner = "Werewolves" if out == -12 else "Townsfolk"
                 logs.append(f"Game won by: {winner}")
                 for name, role in zip(names, roles):
                     logs.append(f"{name}: {role}")

@@ -30,3 +30,14 @@ text_positions = {
     "gemini": (10, HEIGHT-TBOX_HEIGHT-10),
     "gpt4": (WIDTH-TBOX_WIDTH-10, 10)
 }
+
+BASE_TTS = "./audio"
+
+voices = {
+    "narrator": "onwK4e9ZLuTAKqWW03F9",
+    "deepseek": "cjVigY5qzO86Huf0OWal",
+    "grok": "pqHfZKP75CvOlQylNhV4",
+    "gemini": "iP95p4xoKVk53GoZ742B",
+    "gpt4": "N2lVS1w4EtoT3dr4eOWO",
+    "sonnet": "IKne3meq5aSn9XLyUdCD"   
+}

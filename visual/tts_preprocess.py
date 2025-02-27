@@ -43,20 +43,13 @@ def generate_and_save_audio(text, voice_id, api_key, output_filename):
         return False
 
 
-def main():
+def preprocess_audio(log_file_path):
     api_key = os.getenv('EL_KEY')
     assert api_key, "Eleven Labs API key not found. Please set the EL_KEY environment variable."
-
-    if len(sys.argv) < 2:
-        print("Usage: python main.py <path_to_game_log>")
-        sys.exit(1)
-    
-    log_file_path = sys.argv[1]
 
     game_log = load_game_log(log_file_path)
     
     for char, text in game_log:
-        print(char, text)
         os.makedirs(f"{BASE_TTS}/{char}", exist_ok=True)
         text_hash = hashlib.md5(text.encode()).hexdigest()
         output_file = f"{BASE_TTS}/{char}/{text_hash}.mp3"
@@ -64,4 +57,8 @@ def main():
             generate_and_save_audio(text, voices[char.lower()], api_key, output_file)
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) < 2:
+        print("Usage: python main.py <path_to_game_log>")
+        sys.exit(1)
+    log_file_path = sys.argv[1]
+    preprocess_audio(log_file_path)

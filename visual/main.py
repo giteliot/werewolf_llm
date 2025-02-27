@@ -1,8 +1,11 @@
 import pygame
 import sys
+import os
 import math
 from const import *
 from io_utils import load_game_log
+import hashlib
+from tts_preprocess import preprocess_audio
 
 class WerewolfGame:
     def __init__(self, log_file_path):
@@ -93,36 +96,37 @@ class WerewolfGame:
         return pygame.Rect(box_x, box_y, box_width, box_height)
     
     def update(self):
-        current_time = pygame.time.get_ticks()
-        if current_time - self.last_update > self.time_per_line:
-            self.current_line_index = (self.current_line_index + 1) % len(self.game_log)
-            if "The night falls." in self.game_log[self.current_line_index]:
-                self.is_night = True
-            elif "The day rises." in self.game_log[self.current_line_index]:
-                self.is_night = False
-            self.last_update = current_time
-            
+        if "The night falls." in self.game_log[self.current_line_index][1]:
+            self.is_night = True
+        elif "The day rises." in self.game_log[self.current_line_index][1]:
+            self.is_night = False
+        self.current_line_index = (self.current_line_index + 1) % len(self.game_log)
+        # self.last_update = current_time
+
     def draw(self):
         if self.is_night:
             self.screen.blit(self.background_night, (0, 0))
         else:
             self.screen.blit(self.background_day, (0, 0))
         self.draw_players()
-        
-        line = self.game_log[self.current_line_index]
-        if ":" in line:
-            speaker, message = line.split(":", 1)
-            speaker = speaker.strip()
-            message = message.strip().strip('"')
-        else:
-            speaker = "Narrator"
-            message = line
-            
+
+        speaker, message = self.game_log[self.current_line_index]
+
         text_box_rect = self.get_text_box_position(speaker)
         self.draw_text_box(message, text_box_rect, WHITE, BOX_COLOR, padding=10)
-        
+
         pygame.display.flip()
-        
+
+    def play(self):
+        speaker, message = self.game_log[self.current_line_index]
+        text_hash = hashlib.md5(message.encode()).hexdigest()
+        audio_file = f"{BASE_TTS}/{speaker}/{text_hash}.mp3"
+        if os.path.exists(audio_file):
+            pygame.mixer.music.load(audio_file)
+            pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy():
+            pygame.time.Clock().tick(10)
+
     def run(self):
         running = True
         while running:
@@ -130,8 +134,9 @@ class WerewolfGame:
                 if event.type == pygame.QUIT:
                     running = False
                     
-            self.update()
             self.draw()
+            self.play()
+            self.update()
             self.clock.tick(60)
             
 def main():
@@ -140,6 +145,7 @@ def main():
         sys.exit(1)
     
     log_file_path = sys.argv[1]
+    preprocess_audio(log_file_path)
     game = WerewolfGame(log_file_path)
     game.run()
     pygame.quit()

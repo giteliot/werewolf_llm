@@ -2,7 +2,7 @@ import requests
 import json
 import os
 from const import BASE_TTS, voices
-from io_utils import load_game_log
+from utils import load_game_log
 import hashlib
 import sys
 

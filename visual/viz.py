@@ -3,18 +3,19 @@ import sys
 import os
 import math
 from const import *
-from io_utils import load_game_log
+from utils import load_game_log, get_eliminated_player, load_final_results
 import hashlib
 from tts_preprocess import preprocess_audio
 
 class WerewolfGame:
-    def __init__(self, log_file_path):
+    def __init__(self, log_file_path, players):
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Werewolf Game Replay")
         self.font = pygame.font.SysFont("Arial", FONT_SIZE)
         self.clock = pygame.time.Clock()
         
+        self.players = players
         # Load background images
         self.background_day = pygame.image.load('./img/background_day.png').convert()
         self.background_day = pygame.transform.scale(self.background_day, (WIDTH, HEIGHT))
@@ -23,20 +24,29 @@ class WerewolfGame:
         
         # Load player images
         self.player_images = {}
+        self.player_labels = {}
+        self.player_eliminated = {}
         for player, size in zip(
-            ["deepseek", "grok", "sonnet", "gemini", "gpt4"], 
+            self.players, 
             [(128, 360), (196, 360), (128, 340), (128, 360), (128, 360)]
         ):
             image = pygame.image.load(f'./img/{player}.png').convert_alpha()
             self.player_images[player] = pygame.transform.scale(image, size)
+            self.player_labels[player] = player
+            self.player_eliminated[player] = False
+
+        self.eliminated_image = pygame.image.load('./img/eliminated.png').convert_alpha()
+        self.eliminated_image = pygame.transform.scale(self.eliminated_image, (ELIM_WIDTH, ELIM_HEIGHT))
         
         self.game_log = load_game_log(log_file_path)
         self.setup_players()
         self.setup_game_state()
         self.is_night = True
+        self.is_game_over = False
+
+        self.final_result = load_final_results(log_file_path)
         
     def setup_players(self):
-        self.players = ["deepseek", "grok", "sonnet", "gemini", "gpt4"]
         self.num_players = len(self.players)
         self.circle_center = (WIDTH // 2, HEIGHT // 2 + 150)
         self.circle_radius = 200
@@ -77,31 +87,50 @@ class WerewolfGame:
             image_rect = player_image.get_rect(center=pos)
             # Draw the image
             self.screen.blit(player_image, image_rect)
+
+            if self.player_eliminated[name]:
+                eliminated_rect = self.eliminated_image.get_rect(center=pos)
+                self.screen.blit(self.eliminated_image, eliminated_rect)
+
             # Draw the name below the image
-            name_text = self.font.render(name.capitalize(), True, WHITE)
+            name_text = self.font.render(self.player_labels[name].capitalize(), True, WHITE)
             text_rect = name_text.get_rect(center=(pos[0], pos[1] - 60))  # Adjust the 40 value as needed
             self.screen.blit(name_text, text_rect)
             
-    def get_text_box_position(self, speaker):
+    def get_text_box_position(self, speaker, message):
+        # Calculate box position and dimensions
+        padding = 10
         if speaker.lower() == "narrator":
             box_width = NBOX_WIDTH
-            box_height = NBOX_HEIGHT
             box_x = WIDTH // 2 - box_width // 2
             box_y = 10
         else:
             box_x, box_y = text_positions[speaker.lower()]
             box_width = TBOX_WIDTH
-            box_height = TBOX_HEIGHT
-            
+
+        # Calculate box height based on message length
+        box_height = 50 + (len(message) // 30) * 22  # Base height + extra height per 30 chars
+
         return pygame.Rect(box_x, box_y, box_width, box_height)
     
     def update(self):
-        if "The night falls." in self.game_log[self.current_line_index][1]:
+        speaker, message = self.game_log[self.current_line_index]
+
+        if "The night falls." in message:
             self.is_night = True
-        elif "The day rises." in self.game_log[self.current_line_index][1]:
+        elif "The day rises." in message:
             self.is_night = False
-        self.current_line_index = (self.current_line_index + 1) % len(self.game_log)
-        # self.last_update = current_time
+        self.current_line_index = self.current_line_index + 1
+
+        if self.current_line_index >= len(self.game_log):
+            self.is_game_over = True
+            return
+            
+        eliminated_player = get_eliminated_player(speaker, message)
+        if eliminated_player is not None:
+            player, role, cause = eliminated_player
+            self.player_labels[player] = f"{player} ({cause}, was {role})"
+            self.player_eliminated[player] = True
 
     def draw(self):
         if self.is_night:
@@ -112,12 +141,12 @@ class WerewolfGame:
 
         speaker, message = self.game_log[self.current_line_index]
 
-        text_box_rect = self.get_text_box_position(speaker)
+        text_box_rect = self.get_text_box_position(speaker, message)
         self.draw_text_box(message, text_box_rect, WHITE, BOX_COLOR, padding=10)
 
         pygame.display.flip()
 
-    def play(self):
+    def play_sound(self):
         speaker, message = self.game_log[self.current_line_index]
         text_hash = hashlib.md5(message.encode()).hexdigest()
         audio_file = f"{BASE_TTS}/{speaker}/{text_hash}.mp3"
@@ -127,6 +156,28 @@ class WerewolfGame:
         while pygame.mixer.music.get_busy():
             pygame.time.Clock().tick(10)
 
+    def draw_final_screen(self):
+        self.screen.fill(BG_COLOR)
+        winner, townsfolks, werewolves = self.final_result
+        winner_text = self.font.render(f"{winner.capitalize()} wins", True, WHITE)
+        self.screen.blit(winner_text, (WIDTH//2 - 50, 50))
+
+        townsfolks_text = self.font.render("Townsfolks:", True, WHITE)
+        self.screen.blit(townsfolks_text, (WIDTH//2 - 50, 100))
+        y_offset = 120
+        for player in townsfolks:
+            player_text = self.font.render(player.capitalize(), True, WHITE)
+            self.screen.blit(player_text, (WIDTH//2 - 50, y_offset))
+            y_offset += 20
+        
+        werewolves_text = self.font.render("Werewolves:", True, WHITE)
+        self.screen.blit(werewolves_text, (WIDTH//2 - 50, y_offset))
+        y_offset += 20
+        for player in werewolves:
+            player_text = self.font.render(player.capitalize(), True, WHITE)
+            self.screen.blit(player_text, (WIDTH//2 - 50, y_offset))
+            y_offset += 20
+
     def run(self):
         running = True
         while running:
@@ -134,9 +185,12 @@ class WerewolfGame:
                 if event.type == pygame.QUIT:
                     running = False
                     
-            self.draw()
-            self.play()
-            self.update()
+            if self.is_game_over:
+                self.draw_final_screen()
+            else:
+                self.draw()
+                self.play_sound()
+                self.update()
             self.clock.tick(60)
             
 def main():
@@ -146,7 +200,10 @@ def main():
     
     log_file_path = sys.argv[1]
     preprocess_audio(log_file_path)
-    game = WerewolfGame(log_file_path)
+    game = WerewolfGame(
+        log_file_path,
+        ["deepseek", "grok", "sonnet", "gemini", "gpt4"]
+    )
     game.run()
     pygame.quit()
     sys.exit()

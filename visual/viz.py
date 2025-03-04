@@ -109,16 +109,16 @@ class WerewolfGame:
             box_width = TBOX_WIDTH
 
         # Calculate box height based on message length
-        box_height = 50 + (len(message) // 30) * 22  # Base height + extra height per 30 chars
+        box_height = 50 + (len(message) // 30) * 25  # Base height + extra height per 30 chars
 
         return pygame.Rect(box_x, box_y, box_width, box_height)
     
     def update(self):
         speaker, message = self.game_log[self.current_line_index]
 
-        if "The night falls." in message:
+        if "The night falls" in message:
             self.is_night = True
-        elif "The day rises." in message:
+        elif "The sun rises" in message:
             self.is_night = False
         self.current_line_index = self.current_line_index + 1
 
@@ -158,25 +158,60 @@ class WerewolfGame:
 
     def draw_final_screen(self):
         self.screen.fill(BG_COLOR)
-        winner, townsfolks, werewolves = self.final_result
-        winner_text = self.font.render(f"{winner.capitalize()} wins", True, WHITE)
-        self.screen.blit(winner_text, (WIDTH//2 - 50, 50))
-
-        townsfolks_text = self.font.render("Townsfolks:", True, WHITE)
-        self.screen.blit(townsfolks_text, (WIDTH//2 - 50, 100))
-        y_offset = 120
-        for player in townsfolks:
-            player_text = self.font.render(player.capitalize(), True, WHITE)
-            self.screen.blit(player_text, (WIDTH//2 - 50, y_offset))
-            y_offset += 20
+        winner, townsfolks, werewolves, roles = self.final_result
         
-        werewolves_text = self.font.render("Werewolves:", True, WHITE)
-        self.screen.blit(werewolves_text, (WIDTH//2 - 50, y_offset))
-        y_offset += 20
+        # Draw winner text
+        big_font = pygame.font.SysFont("Arial", FONT_SIZE * 3)
+        winner_text = big_font.render(f"{winner.capitalize()} wins!", True, WHITE)
+        winner_rect = winner_text.get_rect(center=(WIDTH//2, 50))
+        self.screen.blit(winner_text, winner_rect)
+        
+        # Display werewolf images in a row
+        x_offset = WIDTH//2
+        y_offset = 250
+        image_spacing = 150
         for player in werewolves:
-            player_text = self.font.render(player.capitalize(), True, WHITE)
-            self.screen.blit(player_text, (WIDTH//2 - 50, y_offset))
-            y_offset += 20
+            # Scale down the player image for the final screen
+            original_image = self.player_images[player]
+            scaled_image = pygame.transform.scale(original_image, (original_image.get_width()//2, original_image.get_height()//2))
+            image_rect = scaled_image.get_rect(center=(x_offset, y_offset))
+            self.screen.blit(scaled_image, image_rect)
+
+            if self.player_eliminated[player]:
+                eliminated_rect = self.eliminated_image.get_rect(center=(x_offset, y_offset))
+                self.screen.blit(self.eliminated_image, eliminated_rect)
+            
+            # Add player name below image
+            name_text = self.font.render(roles[player].capitalize(), True, WHITE)
+            name_rect = name_text.get_rect(center=(x_offset, y_offset + 70))
+            self.screen.blit(name_text, name_rect)
+        
+            
+            x_offset += image_spacing
+        
+        # Display townsfolk images in a row
+        x_offset = WIDTH//4
+        y_offset += 300
+        for player in townsfolks:
+            # Scale down the player image for the final screen
+            original_image = self.player_images[player]
+            scaled_image = pygame.transform.scale(original_image, (original_image.get_width()//2, original_image.get_height()//2))
+            image_rect = scaled_image.get_rect(center=(x_offset, y_offset))
+            self.screen.blit(scaled_image, image_rect)
+
+            if self.player_eliminated[player]:
+                eliminated_rect = self.eliminated_image.get_rect(center=(x_offset, y_offset))
+                self.screen.blit(self.eliminated_image, eliminated_rect)
+            
+            # Add player name below image
+            name_text = self.font.render(roles[player].capitalize(), True, WHITE)
+            name_rect = name_text.get_rect(center=(x_offset, y_offset + 70))
+            self.screen.blit(name_text, name_rect)
+            
+            x_offset += image_spacing
+
+
+        pygame.display.flip()
 
     def run(self):
         running = True

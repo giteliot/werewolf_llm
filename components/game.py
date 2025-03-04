@@ -23,7 +23,7 @@ class Game:
         self._setup()
 
     def _setup(self):
-        self.reveal_event_to_players("A new game begins!")
+        self.reveal_event_to_players("A new game is beginning.")
         for player in self.players:
             team = "WereWolf" if player.get_type() == "Werewolf" else "Villager"
             player.events.append(f"Your name is {player.name}, and your role in this game is {player.get_type()}. You are team {team}.")
@@ -79,7 +79,7 @@ class Game:
         return 0
 
     def _n0(self):
-        self.reveal_event_to_players("The night falls. Everyone goes to sleep. Werewolves wake up. Who do you want to kill?")
+        self.reveal_event_to_players("The night falls, and everyone goes to sleep. The werewolf wakes up and chooses his victim.")
         werewolf = random.sample(self.get_players('Werewolf'), 1)[0]
         dead = werewolf.kill_player(self.players)
         self.night_dead = dead
@@ -88,7 +88,7 @@ class Game:
         seer = self.get_players('Seer')
         if len(seer) < 1:
             return
-        self.reveal_event_to_players("Seer, wake up. Who do you want to reveal?")
+        self.reveal_event_to_players("The Seer wakes up and chooses someone to reveal the role.")
         seer = seer[0]
         seer.reveal(self.players)
 
@@ -96,7 +96,7 @@ class Game:
         doc = self.get_players('Doctor')
         if len(doc) < 1:
             return
-        self.reveal_event_to_players("Doctor, wake up. Who do you want to save?")
+        self.reveal_event_to_players("The doctor wakes up and chooses someone to save.")
         doc = doc[0]
         saved = doc.save_player(self.players)
 
@@ -104,7 +104,7 @@ class Game:
             self.night_dead = None
 
     def _d0(self):
-        self.reveal_event_to_players("The sun rises. Everyone wakes up.")
+        self.reveal_event_to_players("The sun rises, everyone wakes up and gather in the town square.")
         if self.night_dead:
             self.reveal_event_to_players(f"{self.night_dead} was found dead. He was a {get_role_from_name(self.night_dead, self.players)}.")
             self.remove_player(self.night_dead)
@@ -115,7 +115,7 @@ class Game:
             self.reveal_event_to_players("Nobody died last night.")
 
     def _d1(self):
-        self.reveal_event_to_players("Discussions to vote on which one is a werewolf are now open.")
+        self.reveal_event_to_players("Now you can discuss who should be sent to jail.")
         players = random.sample(self.players, len(self.players))
         for k in range(5):
             idx = k % len(players)
@@ -124,10 +124,12 @@ class Game:
         
 
     def _d2(self):
-        self.reveal_event_to_players("It's now time to vote who to send to jail.")
+        self.reveal_event_to_players("Time's up, it's now time to vote who you want to send to jail..")
         votes = []
         for player in self.players:
-            votes.append(player.vote(self.players))
+            target = player.vote(self.players)
+            votes.append(target)
+            self.reveal_conversation_to_players(player, target)
 
         vote_counts = Counter([vote for vote in votes if vote != 'Skip'])
         print(vote_counts)

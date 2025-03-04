@@ -5,8 +5,9 @@ def get_discuss_prompt(events, name, role, alive_players):
     --------------------------------------
     Remember that you are called {name}, and you are a {role}.
     The other players who are still in the game are: {alive_players}.
-    It's your turn to discuss. You can choose to not speak, in this case just reply with 'Stays silent'.
-    If you discuss, do it in at most 50 words, so that everyone has a chance to speak.
+    It's your turn to discuss who should be voted to go to jail.
+    You can choose to not speak, in this case just reply with 'Stays silent'.
+    If you discuss, do it in at most 30 words, so that everyone has a chance to speak.
     Anything you think and say after this will be heard by anyone, so be careful:
     """
 
@@ -17,7 +18,7 @@ def get_vote_prompt(events, name, role, alive_players):
     --------------------------------------
     Remember that you are called {name}, and you are a {role}.
     It's now time to vote.
-    Who do you vote to eliminate? Reply EXCLUSIVELY with the name of the player you are voting out.
+    Who do you vote to be sent to jail, and thus eliminated from the game? Reply EXCLUSIVELY with the name of the player you are voting out.
     You can vote the following players {alive_players}, or you can skip the vote. Do not change any letter of the name, not even capitalization, and do not add any character. If you want to skip just reply with 'Skip'.
     You vote is:
     """

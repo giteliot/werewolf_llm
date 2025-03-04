@@ -1,5 +1,4 @@
 
-narrator: "deepseek was sent to jail. He was a Werewolf."
 narrator: "Townsfolk win!"
 Game won by: Townsfolk
 deepseek: Werewolf

@@ -17,15 +17,18 @@ def load_final_results(file_path):
     winner = res[0][1]
     townsfolks = []
     werewolves = []
+    roles = {}
+    
     for name, role in res[1:]:
+        roles[name] = role
         if "werewolf" == role.lower():
             werewolves.append(name)
         else:
             townsfolks.append(name)
-    return winner, townsfolks, werewolves
+    return winner, townsfolks, werewolves, roles
 
 def get_eliminated_player(speaker, message):
-    if speaker != "narrator":
+    if speaker.lower() != "narrator":
         return None
 
     tokens = message.replace(".", "").split(" ")

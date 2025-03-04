@@ -1,3 +1,5 @@
 components/llm/__pycache__/
 components/players/
-
+results/
+__pycache__/
+visual/audio/

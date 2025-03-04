@@ -40,8 +40,8 @@ class Game:
 
     def reveal_event_to_players(self, event_description):
         rich_text = f'Narrator: "{event_description}"'
-        print()
-        print(rich_text)
+        # print()
+        # print(rich_text)
         self.logs.append(rich_text)
 
         for p in self.players:
@@ -49,8 +49,8 @@ class Game:
 
     def reveal_conversation_to_players(self, player, message):
         rich_text = f'{player.name}: "{message}"'
-        print()
-        print(rich_text)
+        # print()
+        # print(rich_text)
         self.logs.append(rich_text)
 
         for p in self.players:
@@ -69,11 +69,9 @@ class Game:
     def check_win_condition(self) -> int:
         werewolves = self.get_players('Werewolf')
         if len(werewolves) == 0:
-            print("Townsfolk win!")
             return 1
 
         if 2*len(werewolves) >= len(self.players):
-            print("Werewolves win!")
             return -1
         
         return 0
@@ -132,7 +130,6 @@ class Game:
             self.reveal_conversation_to_players(player, target)
 
         vote_counts = Counter([vote for vote in votes if vote != 'Skip'])
-        print(vote_counts)
         max_votes = max(vote_counts.values())
         max_players = [player for player, count in vote_counts.items() if count == max_votes]
         

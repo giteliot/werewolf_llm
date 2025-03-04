@@ -24,5 +24,5 @@ if __name__ == "__main__":
                     logs.append(f"{name}: {role}")
                 f.write("\n".join(logs))
 
-            print(f"the roles were: {list(zip(names, roles))}")
+            # print(f"the roles were: {list(zip(names, roles))}")
             break

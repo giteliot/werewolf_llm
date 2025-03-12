@@ -1,15 +1,16 @@
 from typing import List, Tuple
 from .players.player import create_player, Player
+from .players.prompts import get_role_prompt
 import random
 from collections import Counter
 from components.players.utils import get_role_from_name
 
 class Game:
-    def __init__(self, players: List[Tuple[str, str]], logs: List[str] = []):
+    def __init__(self, players: List[Tuple[str, str]]):
         self.players: List[Player] = [create_player(name, role) for name, role in players]
         self.state = 0
         self.night_dead = None
-        self.logs = logs
+        self.logs = []
 
         self.state_handlers = {
             0: self._n0,
@@ -21,12 +22,13 @@ class Game:
         }
 
         self._setup()
+        self.first_round = True
 
     def _setup(self):
         self.reveal_event_to_players("A new game is beginning.")
         for player in self.players:
             team = "WereWolf" if player.get_type() == "Werewolf" else "Villager"
-            player.events.append(f"Your name is {player.name}, and your role in this game is {player.get_type()}. You are team {team}.")
+            player.events.append(get_role_prompt(player))
         for p1 in self.get_players('Werewolf'):
             for p2 in self.get_players('Werewolf'):
                 if p1 != p2:
@@ -77,6 +79,9 @@ class Game:
         return 0
 
     def _n0(self):
+        if self.first_round == True:
+            self.reveal_event_to_players("The night falls, and everyone goes to sleep.")
+            return
         self.reveal_event_to_players("The night falls, and everyone goes to sleep. The werewolf wakes up and chooses his victim.")
         werewolf = random.sample(self.get_players('Werewolf'), 1)[0]
         dead = werewolf.kill_player(self.players)
@@ -91,6 +96,8 @@ class Game:
         seer.reveal(self.players)
 
     def _n2(self):
+        if self.first_round == True:
+            return
         doc = self.get_players('Doctor')
         if len(doc) < 1:
             return
@@ -102,6 +109,10 @@ class Game:
             self.night_dead = None
 
     def _d0(self):
+        if self.first_round == True:
+            self.reveal_event_to_players("The sun rises, everyone wakes up and gather in the town square. Rumors have that a Werewolf was spotted last night. You need to find out who among you the werewolf is, before anyone gets killed.")
+            self.first_round = False
+            return
         self.reveal_event_to_players("The sun rises, everyone wakes up and gather in the town square.")
         if self.night_dead:
             self.reveal_event_to_players(f"{self.night_dead} was found dead. He was a {get_role_from_name(self.night_dead, self.players)}.")
@@ -143,3 +154,4 @@ class Game:
             if self.check_win_condition() > 0:
                 self.reveal_event_to_players("Townsfolk win!")
                 self.state = -17
+

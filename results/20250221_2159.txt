@@ -1,8 +1,0 @@
-
-narrator: "Townsfolk win!"
-Game won by: Townsfolk
-deepseek: Werewolf
-gpt4: Villager
-gemini: Villager
-grok: Seer
-sonnet: Doctor

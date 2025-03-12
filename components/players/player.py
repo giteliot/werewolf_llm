@@ -14,22 +14,34 @@ class Player:
         return self.__class__.__name__
 
     def discuss(self, players) -> str:
+        if not hasattr(self, 'revealed'):
+            revealed = ""
+        else:
+            revealed = self.revealed
+
         prompt = get_discuss_prompt(
             self.events, 
             self.name, 
             self.get_type(), 
-            [p.name for p in players if p.name != self.name]
+            [p.name for p in players if p.name != self.name],
+            revealed
         )
         out = self.brain.chat_completion(prompt)
         return out
 
     
     def vote(self, players):
+        if not hasattr(self, 'revealed'):
+            revealed = ""
+        else:
+            revealed = self.revealed
+
         prompt = get_vote_prompt(
             self.events, 
             self.name, 
             self.get_type(), 
-            [p.name for p in players if p.name != self.name]
+            [p.name for p in players if p.name != self.name],
+            revealed
         )
         out = self.brain.chat_completion(prompt)
         voted =  sanitize_name(out, players)
@@ -84,6 +96,7 @@ class Seer(Player):
         )
 
         out = self.brain.chat_completion(prompt).lower()
+
         reveal_name = sanitize_name(out, players)
         if reveal_name is not None:
             self.revealed[reveal_name] = get_role_from_name(reveal_name, players)

@@ -109,7 +109,7 @@ class WerewolfGame:
             box_width = TBOX_WIDTH
 
         # Calculate box height based on message length
-        box_height = 50 + (len(message) // 30) * 25  # Base height + extra height per 30 chars
+        box_height = 50 + (len(message) // 30) * 20  # Base height + extra height per 30 chars
 
         return pygame.Rect(box_x, box_y, box_width, box_height)
     
@@ -214,6 +214,7 @@ class WerewolfGame:
         pygame.display.flip()
 
     def run(self):
+        starting = True
         running = True
         while running:
             for event in pygame.event.get():
@@ -224,11 +225,16 @@ class WerewolfGame:
                 self.draw_final_screen()
             else:
                 self.draw()
+                if starting:
+                    # pygame.time.wait(15000)
+                    starting = False
                 self.play_sound()
                 self.update()
+                
             self.clock.tick(60)
             
 def main():
+    
     if len(sys.argv) < 2:
         print("Usage: python main.py <path_to_game_log>")
         sys.exit(1)

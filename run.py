@@ -3,6 +3,11 @@ from datetime import datetime
 from components.game import Game
 from components.llm.llm import MODELS
 
+ROLES = [
+        'Werewolf',
+        'Villager','Villager',
+        'Seer','Doctor']
+
 def run(game, names, roles):
     start_time = datetime.now()
     for k in range(40):
@@ -25,20 +30,19 @@ def run(game, names, roles):
 
 def single_run():
     names = random.sample(list(MODELS.keys()), len(MODELS.keys()))
-    roles = [
-        'Werewolf',
-        'Villager','Villager',
-        'Seer','Doctor']
+    roles = ROLES
+    game = Game(list(zip(names, roles)))
+    run(game, names, roles)
 
+def role_run(name, role):
+    roles = [r for r in ROLES if r != role]+[role]
+    names = [n for n in list(MODELS.keys()) if n != name]+[name]
     game = Game(list(zip(names, roles)))
     run(game, names, roles)
 
 def all_roles_run():
     names = random.sample(list(MODELS.keys()), len(MODELS.keys()))
-    roles = [
-        'Werewolf',
-        'Villager','Villager',
-        'Seer','Doctor']
+    roles = ROLES
     
     for _ in range(len(MODELS.keys())):
         game = Game(list(zip(names, roles)))
@@ -49,7 +53,9 @@ def all_roles_run():
     run(game, names, roles)
 
 if __name__ == "__main__":
-    all_roles_run()
+    # all_roles_run()
+    for _ in range(2):
+        role_run('grok', 'Werewolf')
 
 
     

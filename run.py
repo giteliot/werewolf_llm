@@ -53,9 +53,8 @@ def all_roles_run():
     run(game, names, roles)
 
 if __name__ == "__main__":
-    # all_roles_run()
-    for _ in range(2):
-        role_run('grok', 'Werewolf')
+    single_run()
+    
 
 
     

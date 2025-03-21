@@ -99,17 +99,15 @@ class WerewolfGame:
             
     def get_text_box_position(self, speaker, message):
         # Calculate box position and dimensions
-        padding = 10
         if speaker.lower() == "narrator":
             box_width = NBOX_WIDTH
             box_x = WIDTH // 2 - box_width // 2
             box_y = 10
+            box_height = 50 + (len(message) // 50) * 25
         else:
             box_x, box_y = text_positions[speaker.lower()]
             box_width = TBOX_WIDTH
-
-        # Calculate box height based on message length
-        box_height = 50 + (len(message) // 30) * 20  # Base height + extra height per 30 chars
+            box_height = 50 + (len(message) // 30) * 25
 
         return pygame.Rect(box_x, box_y, box_width, box_height)
     
@@ -226,6 +224,7 @@ class WerewolfGame:
             else:
                 self.draw()
                 if starting:
+                    # I just need this to give myself sometime if I need to record
                     # pygame.time.wait(15000)
                     starting = False
                 self.play_sound()

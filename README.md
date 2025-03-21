@@ -18,7 +18,7 @@ This is a Werewolf game implementation where different LLM models take on roles 
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone git@github.com:giteliot/werewolf_llm.git
 cd werewolf_llm
 ```
 

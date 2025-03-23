@@ -1,19 +1,23 @@
-import random
 from typing import List
 from components.llm.llm import LLM
 from components.players.prompts import get_discuss_prompt, get_vote_prompt, get_kill_prompt, get_reveal_prompt, get_save_prompt
-from components.players.utils import get_role_from_name, sanitize_name
+from components.players.utils import get_role_from_name, sanitize_name, get_human_input
 
 class Player:
-    def __init__(self, name: str):
+    def __init__(self, name: str, is_human: bool = False):
+        self.is_human = is_human
         self.name = name
-        self.brain = LLM(name)
         self.events = []
+        if not is_human:
+            self.brain = LLM(name)
+
 
     def get_type(self):
         return self.__class__.__name__
 
     def discuss(self, players) -> str:
+        if self.is_human:
+            return get_human_input("What do you want to say?")
         if not hasattr(self, 'revealed'):
             revealed = ""
         else:
@@ -31,6 +35,9 @@ class Player:
 
     
     def vote(self, players):
+        if self.is_human:
+            return get_human_input("Who do you want to vote for? Just type the name and nothing else.")
+        
         if not hasattr(self, 'revealed'):
             revealed = ""
         else:
@@ -48,10 +55,12 @@ class Player:
         return voted
 
 class Werewolf(Player):
-    def __init__(self, name: str):
-        super().__init__(name)
+    def __init__(self, name: str, is_human: bool = False):
+        super().__init__(name, is_human)
 
     def kill_player(self, players, tries=0) -> str:
+        if self.is_human:
+            return get_human_input("Who do you want to kill? Just type the name and nothing else.")
         if tries > 3:
             raise ValueError(f"Werewolf {self.name} is too dumb to kill anyone. Game Aborted.")
         prompt = get_kill_prompt(
@@ -69,15 +78,17 @@ class Werewolf(Player):
 
 
 class Villager(Player):
-    def __init__(self, name: str):
-        super().__init__(name)
+    def __init__(self, name: str, is_human: bool = False):
+        super().__init__(name, is_human)
 
 class Seer(Player):
-    def __init__(self, name: str):
-        super().__init__(name)
+    def __init__(self, name: str, is_human: bool = False):
+        super().__init__(name, is_human)
         self.revealed = {}
 
     def reveal(self, players, tries=0) -> str:
+        if self.is_human:
+            return get_human_input("Who do you want to reveal? Just type the name and nothing else.")
         if tries > 3:
             raise ValueError(f"Seer {self.name} is too dumb to reveal anyone. Game Aborted.")
 
@@ -98,16 +109,22 @@ class Seer(Player):
         out = self.brain.chat_completion(prompt).lower()
 
         reveal_name = sanitize_name(out, players)
+
+        if self.is_human:
+            print(f"Revealing: {reveal_name} is a {get_role_from_name(reveal_name, players)}")
+            
         if reveal_name is not None:
             self.revealed[reveal_name] = get_role_from_name(reveal_name, players)
             return reveal_name
         return self.reveal(players, tries+1)
 
 class Doctor(Player):
-    def __init__(self, name: str):
-        super().__init__(name)
+    def __init__(self, name: str, is_human: bool = False):
+        super().__init__(name, is_human)
 
     def save_player(self, players, tries=0) -> str:
+        if self.is_human:
+            return get_human_input("Who do you want to save? Just type the name and nothing else.")
         if tries > 3:
             raise ValueError(f"Doctor {self.name} is too dumb to save anyone. Game Aborted.")
         prompt = get_save_prompt(
@@ -122,14 +139,14 @@ class Doctor(Player):
             return save_name
         return self.save_player(players, tries+1)
 
-def create_player(name: str, role: str):
+def create_player(name: str, role: str, is_human: bool = False):
     if role == 'Werewolf':
-        return Werewolf(name)
+        return Werewolf(name, is_human)
     elif role == 'Villager':
-        return Villager(name)
+        return Villager(name, is_human)
     elif role == 'Seer':
-        return Seer(name)
+        return Seer(name, is_human)
     elif role == 'Doctor':
-        return Doctor(name)
+        return Doctor(name, is_human)
     else:
         raise ValueError("WTF was that role?!?!?")

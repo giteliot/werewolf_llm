@@ -6,8 +6,8 @@ from collections import Counter
 from components.players.utils import get_role_from_name
 
 class Game:
-    def __init__(self, players: List[Tuple[str, str]]):
-        self.players: List[Player] = [create_player(name, role) for name, role in players]
+    def __init__(self, players: List[Tuple[str, str, bool]]):
+        self.players: List[Player] = [create_player(name, role, is_human) for name, role, is_human in players]
         self.state = 0
         self.night_dead = None
         self.logs = []
@@ -27,7 +27,6 @@ class Game:
     def _setup(self):
         self.reveal_event_to_players("A new game is beginning.")
         for player in self.players:
-            team = "WereWolf" if player.get_type() == "Werewolf" else "Villager"
             player.events.append(get_role_prompt(player))
         for p1 in self.get_players('Werewolf'):
             for p2 in self.get_players('Werewolf'):
@@ -42,8 +41,8 @@ class Game:
 
     def reveal_event_to_players(self, event_description):
         rich_text = f'Narrator: "{event_description}"'
-        # print()
-        # print(rich_text)
+        print()
+        print(rich_text)
         self.logs.append(rich_text)
 
         for p in self.players:
@@ -51,8 +50,8 @@ class Game:
 
     def reveal_conversation_to_players(self, player, message):
         rich_text = f'{player.name}: "{message}"'
-        # print()
-        # print(rich_text)
+        print()
+        print(rich_text)
         self.logs.append(rich_text)
 
         for p in self.players:

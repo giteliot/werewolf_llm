@@ -28,10 +28,14 @@ def run(game, names, roles):
     duration = end_time - start_time
     print(f"Game duration: {duration}")
 
-def single_run():
+def single_run(with_human: bool = False):
     names = random.sample(list(MODELS.keys()), len(MODELS.keys()))
     roles = ROLES
-    game = Game(list(zip(names, roles)))
+    humans = [False]*len(names)
+    if with_human:
+        names = [name if name != "sonnet" else "human" for name in names]
+        humans = [False if name != "human" else True for name in names]
+    game = Game(list(zip(names, roles, humans)))
     run(game, names, roles)
 
 def role_run(name, role):
@@ -53,7 +57,7 @@ def all_roles_run():
     run(game, names, roles)
 
 if __name__ == "__main__":
-    single_run()
+    single_run(with_human=True)
     
 
 

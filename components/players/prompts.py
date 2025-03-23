@@ -89,6 +89,9 @@ def get_save_prompt(events, name, alive_players):
     """
 
 def get_role_prompt(player):
+    if player.is_human:
+        print(f"You are {player.name}, a {player.get_type()}")
+        return ""
     role = player.get_type()
     base = f"Your name is {player.name}\n"
     if role == "Werewolf":

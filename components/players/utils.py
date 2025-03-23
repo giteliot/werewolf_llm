@@ -14,3 +14,6 @@ def sanitize_name(name, players):
         if p.name in name:
             return p.name
     return None
+
+def get_human_input(prompt):
+    return input(prompt)

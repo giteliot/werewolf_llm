@@ -72,7 +72,7 @@ To run the game simulation:
 python run.py
 ```
 
-The simulation will make a single run with the all the roles chosen at random.
+The simulation will make a single run with the all the roles chosen at random, and where you play your turn by writing text on your terminal.
 
 ### 2. Visual Replay
 

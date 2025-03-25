@@ -242,7 +242,7 @@ def main():
     preprocess_audio(log_file_path)
     game = WerewolfGame(
         log_file_path,
-        ["deepseek", "grok", "sonnet", "gemini", "gpt4"]
+        ["deepseek", "grok", "human", "gemini", "gpt4"]
     )
     game.run()
     pygame.quit()

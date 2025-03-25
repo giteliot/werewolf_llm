@@ -23,13 +23,15 @@ player_positions = {
     "grok": (480, 350),
     "gemini": (360, 540),
     "gpt4": (670, 400),
-    "sonnet": (600, 540)
+    # "sonnet": (600, 540)
+    "human": (580, 540)
 }
 
 text_positions = {
     "deepseek": (10, 10),
     "grok": (WIDTH//2-TBOX_WIDTH//2, 10),
-    "sonnet": (WIDTH-TBOX_WIDTH-10,  HEIGHT-TBOX_HEIGHT-10),
+    # "sonnet": (WIDTH-TBOX_WIDTH-10,  HEIGHT-TBOX_HEIGHT-10),
+    "human": (WIDTH-TBOX_WIDTH-10,  HEIGHT-TBOX_HEIGHT-10),
     "gemini": (10, HEIGHT-TBOX_HEIGHT-10),
     "gpt4": (WIDTH-TBOX_WIDTH-10, 10)
 }
@@ -42,5 +44,6 @@ voices = {
     "grok": "pqHfZKP75CvOlQylNhV4",
     "gemini": "iP95p4xoKVk53GoZ742B",
     "gpt4": "N2lVS1w4EtoT3dr4eOWO",
-    "sonnet": "IKne3meq5aSn9XLyUdCD"   
+    # "sonnet": "IKne3meq5aSn9XLyUdCD",
+    "human": "FCeuWlvKnSAYnuWU0tns"
 }

@@ -22,13 +22,13 @@ def get_human_input(prompt):
 
 def load_file_content(player_name):
     try:
-        with open(f"./data/{player_name}.txt", "r") as f:
+        with open(f"./players/memories/{player_name}.txt", "r") as f:
             return f.read()
     except FileNotFoundError:
         return ""
     
 def save_file_content(player_name, text):
-    os.makedirs("./data", exist_ok=True)
+    os.makedirs("./players/memories", exist_ok=True)
     
-    with open(f"./data/{player_name}.txt", "w") as f:
+    with open(f"./players/memories/{player_name}.txt", "w") as f:
         f.write(text)

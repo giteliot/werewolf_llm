@@ -57,7 +57,7 @@ def all_roles_run():
     run(game, names, roles)
 
 if __name__ == "__main__":
-    single_run(with_human=True)
+    single_run(with_human=False)
     
 
 

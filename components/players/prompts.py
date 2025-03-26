@@ -105,3 +105,30 @@ def get_role_prompt(player):
         Once every night, you can save a player from being killed by the Werewolf. You can either choose yourself, or another player that you think it's on your side."""
     if role == "Villager":
         return base+"""You are a Seer, you play for team Townsfolk, along with the Doctor and the Villagers. As such, your role is to vote the Werewolf to jail."""
+    
+def get_memory_prompt(events, name, role, other_players, winner_team, current_memory):
+    return f"""
+    This is the history of the game that just ended:
+    {events}
+    --------------------------------------
+    Remember that you are called {name}, and you are a {role}.
+    
+    The other players and their roles were: {other_players}
+    The winning team was: {winner_team}
+    
+    Your current memory of previous games is:
+    {current_memory}
+    
+    Based on this game's events and outcome, please update your memory with new learnings that will help you play better in future games.
+    Focus on:
+    1. What strategies worked or didn't work
+    2. How other players behaved and what that might indicate about their roles
+    3. What mistakes you made and how to avoid them
+    4. What successful moves you made that you should repeat
+    5. Patterns in how the game unfolded that could be useful in future games
+    
+    Write your updated memory, incorporating both your previous memory and new learnings from this game.
+    Keep it concise but comprehensive.
+
+    Your updated memory is:
+    """

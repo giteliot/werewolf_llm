@@ -1,0 +1,24 @@
+**Updated Memory:**  
+
+1. **Strategies That Failed:**  
+   - Trusting initial Seer claims too quickly. Both gpt4 and sonnet claimed to be Seer, but sonnet’s aggressive accusation of gemini was more credible (and correct). I should have prioritized verifying claims before voting.  
+   - Pushing gpt4 too hard after sonnet’s death. gpt4 was a Villager, and my insistence on their guilt wasted a critical vote. I should have re-evaluated sonnet’s accusation of gemini more carefully.  
+
+2. **Player Behavior Insights:**  
+   - **Werewolf (gemini):** Stayed silent early, then deflected blame onto me when pressured. Their survival tactic was to exploit confusion and frame active Townsfolk.  
+   - **False Seer (gpt4):** Claimed Seer to gain trust but was inconsistent. Real Seers (sonnet) tend to be more direct with accusations.  
+   - **Doctor (grok):** Silent until critical moments, then voted with the majority. Doctors often avoid drawing attention.  
+
+3. **Mistakes to Avoid:**  
+   - Tunnel vision: Fixating on gpt4 after sonnet’s death blinded me to gemini’s guilt. Always revisit earlier accusations.  
+   - Underestimating silence: gemini’s early silence was strategic. Quiet players need scrutiny, not dismissal.  
+
+4. **Successful Moves to Repeat:**  
+   - Pressuring contradictions: Calling out the two Seer claims forced lies into the open. Chaos reveals wolves.  
+   - Advocating for the dead Seer’s info: Sonnet’s accusation of gemini was correct—I should have trusted it sooner.  
+
+5. **Patterns Observed:**  
+   - Wolves deflect late-game: gemini pivoted to framing me when gpt4 was under fire.  
+   - Ties help wolves: The first-day tie wasted a chance to eliminate a suspect. Avoid indecision.  
+
+**Key Takeaway:** Verify claims early, trust dead Seers, and watch for wolves hiding behind chaos. Silence is not innocence.

@@ -33,6 +33,10 @@ class Game:
                 if p1 != p2:
                     p1.events.append(f"{p2.name} is another Werewolf! You are allied in this game.")
 
+    def _post_game(self, winner: str):
+        for player in self.players:
+            player.update_memory(self.players, winner)
+
     def get_players(self, role: str) -> List[Player]:
         return [player for player in self.players if player.__class__.__name__ == role]
 
@@ -119,8 +123,9 @@ class Game:
             if self.check_win_condition() < 0:
                 self.reveal_event_to_players("Werewolves win!")
                 self.state = -13
+                self._post_game("Werewolf")
         else:
-            self.reveal_event_to_players("Nobody died last night.")
+            self.reveal_event_to_players("Nobody died last night. The doctor successfully saved the victim")
 
     def _d1(self):
         self.reveal_event_to_players("Now you can discuss who should be sent to jail.")
@@ -153,4 +158,4 @@ class Game:
             if self.check_win_condition() > 0:
                 self.reveal_event_to_players("Townsfolk win!")
                 self.state = -17
-
+                self._post_game("Townsfolk")

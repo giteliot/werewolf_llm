@@ -1,7 +1,7 @@
 from typing import List
 from components.llm.llm import LLM
-from components.players.prompts import get_discuss_prompt, get_vote_prompt, get_kill_prompt, get_reveal_prompt, get_save_prompt
-from components.players.utils import get_role_from_name, sanitize_name, get_human_input
+from components.players.prompts import get_discuss_prompt, get_vote_prompt, get_kill_prompt, get_reveal_prompt, get_save_prompt, get_memory_prompt
+from components.players.utils import get_role_from_name, sanitize_name, get_human_input, load_file_content, save_file_content
 
 class Player:
     def __init__(self, name: str, is_human: bool = False):
@@ -51,8 +51,24 @@ class Player:
             revealed
         )
         out = self.brain.chat_completion(prompt)
-        voted =  sanitize_name(out, players)
+        voted = sanitize_name(out, players)
         return voted
+    
+    def update_memory(self, players, winner):
+        if self.is_human:
+            return
+        current_memory = load_file_content(self.name)
+
+        prompt = get_memory_prompt(
+            self.events, 
+            self.name, 
+            self.get_type(), 
+            [(p.name, p.get_type()) for p in players if p.name != self.name],
+            winner,
+            current_memory
+        )
+        out = self.brain.chat_completion(prompt)
+        save_file_content(self.name, out)
 
 class Werewolf(Player):
     def __init__(self, name: str, is_human: bool = False):

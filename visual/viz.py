@@ -225,7 +225,7 @@ class WerewolfGame:
                 self.draw()
                 if starting:
                     # I just need this to give myself sometime if I need to record
-                    # pygame.time.wait(15000)
+                    pygame.time.wait(15000)
                     starting = False
                 self.play_sound()
                 self.update()

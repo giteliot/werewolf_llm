@@ -9,7 +9,7 @@ MODELS = {
 #    "mistral": "mistralai/mistral-large-2411",
 #    "llama": "meta-llama/llama-3.3-70b-instruct",
     "grok": "x-ai/grok-beta",
-    "deepseek": "deepseek/deepseek-chat",
+    "deepseek": "deepseek/deepseek-chat-v3-0324:free",
     "gpt4": "openai/gpt-4o-2024-11-20"
 }
 
@@ -76,7 +76,11 @@ class LLM:
         
         response.raise_for_status()
 
-        return response.json()['choices'][0]['message']['content']
+        try:
+            return response.json()['choices'][0]['message']['content']
+        except Exception as e:
+            print(response.json())
+            raise e
 
 def main():
     client = LLM("gemini")

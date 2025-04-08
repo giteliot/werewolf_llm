@@ -38,28 +38,33 @@ def single_run(with_human: bool = False):
     game = Game(list(zip(names, roles, humans)))
     run(game, names, roles)
 
-def role_run(name, role):
+def role_run(name, role, with_human: bool = False):
     roles = [r for r in ROLES if r != role]+[role]
     names = [n for n in list(MODELS.keys()) if n != name]+[name]
-    game = Game(list(zip(names, roles)))
+    humans = [False]*len(names)
+    if with_human:
+        names = [n if n != "sonnet" else "human" for n in names]
+        humans = [False if n != "human" else True for n in names]
+    game = Game(list(zip(names, roles, humans)))
     run(game, names, roles)
 
 def all_roles_run():
     names = random.sample(list(MODELS.keys()), len(MODELS.keys()))
     roles = ROLES
+    humans = [False]*len(names)
     
     for _ in range(len(MODELS.keys())):
-        game = Game(list(zip(names, roles)))
+        game = Game(list(zip(names, roles, humans)))
         run(game, names, roles)
         names = names[-1:] + names[:-1]
     
-    game = Game(list(zip(names, roles)))
+    game = Game(list(zip(names, roles, humans)))
     run(game, names, roles)
 
 if __name__ == "__main__":
-    single_run(with_human=False)
-    
-
+    single_run(with_human=True)
+    # all_roles_run()
+    # role_run("sonnet", "Werewolf", with_human=True)
 
     
 

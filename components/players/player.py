@@ -23,12 +23,15 @@ class Player:
         else:
             revealed = self.revealed
 
+        memory = load_file_content(self.name)
+
         prompt = get_discuss_prompt(
             self.events, 
             self.name, 
             self.get_type(), 
             [p.name for p in players if p.name != self.name],
-            revealed
+            revealed,
+            memory
         )
         out = self.brain.chat_completion(prompt)
         return out
@@ -43,18 +46,21 @@ class Player:
         else:
             revealed = self.revealed
 
+        memory = load_file_content(self.name)
+
         prompt = get_vote_prompt(
             self.events, 
             self.name, 
             self.get_type(), 
             [p.name for p in players if p.name != self.name],
-            revealed
+            revealed,
+            memory
         )
         out = self.brain.chat_completion(prompt)
         voted = sanitize_name(out, players)
         return voted
     
-    def update_memory(self, players, winner):
+    def update_memory(self, player_roles, winner):
         if self.is_human:
             return
         current_memory = load_file_content(self.name)
@@ -63,7 +69,7 @@ class Player:
             self.events, 
             self.name, 
             self.get_type(), 
-            [(p.name, p.get_type()) for p in players if p.name != self.name],
+            player_roles,
             winner,
             current_memory
         )
@@ -79,11 +85,13 @@ class Werewolf(Player):
             return get_human_input("Who do you want to kill? Just type the name and nothing else.")
         if tries > 3:
             raise ValueError(f"Werewolf {self.name} is too dumb to kill anyone. Game Aborted.")
+        memory = load_file_content(self.name)
         prompt = get_kill_prompt(
             self.events, 
             self.name, 
             [p.name for p in players if p.get_type() == 'Werewolf' and p.name != self.name], 
-            [p.name for p in players if p.name != self.name]
+            [p.name for p in players if p.name != self.name],
+            memory
         )
         out = self.brain.chat_completion(prompt).lower()
         kill_name =  sanitize_name(out, players)
@@ -116,10 +124,13 @@ class Seer(Player):
             if p.name in self.revealed:
                 alive_revealed[p.name] = self.revealed[p.name]
 
+        memory = load_file_content(self.name)
+
         prompt = get_reveal_prompt(
             self.events, 
             self.name, 
-            alive_revealed
+            alive_revealed,
+            memory
         )
 
         out = self.brain.chat_completion(prompt).lower()
@@ -143,10 +154,14 @@ class Doctor(Player):
             return get_human_input("Who do you want to save? Just type the name and nothing else.")
         if tries > 3:
             raise ValueError(f"Doctor {self.name} is too dumb to save anyone. Game Aborted.")
+        
+        memory = load_file_content(self.name)
+
         prompt = get_save_prompt(
             self.events, 
             self.name, 
-            [p.name for p in players if p.name != self.name]
+            [p.name for p in players if p.name != self.name],
+            memory
         )
         out = self.brain.chat_completion(prompt).lower()
         save_name = sanitize_name(out, players)

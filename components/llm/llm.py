@@ -9,7 +9,7 @@ MODELS = {
 #    "mistral": "mistralai/mistral-large-2411",
 #    "llama": "meta-llama/llama-3.3-70b-instruct",
     "grok": "x-ai/grok-beta",
-    "deepseek": "deepseek/deepseek-chat-v3-0324:free",
+    "deepseek": "deepseek/deepseek-chat",
     "gpt4": "openai/gpt-4o-2024-11-20"
 }
 

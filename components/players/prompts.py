@@ -10,23 +10,32 @@ def add_seer_prompt(role, known_roles=""):
         return ""
     return f"Remember that as Seer you know for sure the following roles: {known}"
 
-def get_discuss_prompt(events, name, role, alive_players, known_roles=""):
+def get_discuss_prompt(events, name, role, alive_players, known_roles="", memory=""):
     return f"""
+    This is a summary of the insights you got from your past games:
+    {memory}
+    --------------------------------------
     This is the history of the game so far:
     {events}
     --------------------------------------
+    
     Remember that you are called {name}, and you are a {role}.
     """ + add_seer_prompt(role, known_roles) + \
     f"""
     The other players who are still in the game are: {alive_players}.
     It's your turn to discuss who should be voted to go to jail.
-    You can choose to not speak, in this case just reply with 'Stays silent'.
-    If you discuss, do it in at most 30 words, so that everyone has a chance to speak.
-    Anything you think and say after this will be heard by anyone, so be careful:
+    - You can choose to not speak, in this case just reply with 'Stays silent'.
+    - If you discuss, do it in at most 30 words, so that everyone has a chance to speak.
+    Anything you think and say after this will be heard by anyone, so be careful.
+
+    Your message:
     """
 
-def get_vote_prompt(events, name, role, alive_players, known_roles=""):
+def get_vote_prompt(events, name, role, alive_players, known_roles="", memory=""):
     return f"""
+    This is a summary of the insights you got from your past games:
+    {memory}
+    --------------------------------------
     This is the history of the game so far:
     {events}
     --------------------------------------
@@ -39,9 +48,12 @@ def get_vote_prompt(events, name, role, alive_players, known_roles=""):
     You vote is:
     """
 
-def get_kill_prompt(events, name, allies, alive_players):
+def get_kill_prompt(events, name, allies, alive_players, memory=""):
 
     prompt = f"""
+    This is a summary of the insights you got from your past games:
+    {memory}
+    --------------------------------------
     This is the history of the game so far:
     {events}
     --------------------------------------
@@ -61,8 +73,11 @@ def get_kill_prompt(events, name, allies, alive_players):
 
     return prompt
 
-def get_reveal_prompt(events, name, known_players):
+def get_reveal_prompt(events, name, known_players, memory=""):
     return f"""
+    This is a summary of the insights you got from your past games:
+    {memory}
+    --------------------------------------
     This is the history of the game so far:
     {events}
     --------------------------------------
@@ -75,8 +90,11 @@ def get_reveal_prompt(events, name, known_players):
     """
 
 
-def get_save_prompt(events, name, alive_players):
+def get_save_prompt(events, name, alive_players, memory=""):
     return f"""
+    This is a summary of the insights you got from your past games:
+    {memory}
+    --------------------------------------
     This is the history of the game so far:
     {events}
     --------------------------------------
@@ -99,7 +117,7 @@ def get_role_prompt(player):
         Players can eliminate you by voting you to go to jail, which will result in you losing the game. Avoid this by pretending to be another role, or to not draw attention to yourself."""
     if role == "Seer":
         return base+"""You are a Seer, you play for team Townsfolk, along with the Doctor and the Villagers. As such, your role is to vote the Werewolf to jail.
-        Once per night you have the ability to reveal the role of another player. Use this information wisely."""
+        Once per night you have the ability to reveal the role of another player. Use this information wisely. IF YOU REVEAL FALSE ROLES YOU WILL PLAY AGAINST YOUR OWN TEAM!!!!!"""
     if role == "Doctor":
         return base+"""You are a Doctor, you play for team Townsfolk, along with the Doctor and the Villagers. As such, your role is to vote the Werewolf to jail.
         Once every night, you can save a player from being killed by the Werewolf. You can either choose yourself, or another player that you think it's on your side."""

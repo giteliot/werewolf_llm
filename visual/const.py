@@ -23,7 +23,7 @@ player_positions = {
     "grok": (480, 350),
     "gemini": (360, 540),
     "gpt4": (670, 400),
-    # "sonnet": (600, 540)
+    # "sonnet": (600, 540) ,
     "human": (580, 540)
 }
 

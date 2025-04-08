@@ -8,6 +8,7 @@ from components.players.utils import get_role_from_name
 class Game:
     def __init__(self, players: List[Tuple[str, str, bool]]):
         self.players: List[Player] = [create_player(name, role, is_human) for name, role, is_human in players]
+        self.player_roles = [(player, player.get_type()) for player in self.players]
         self.state = 0
         self.night_dead = None
         self.logs = []
@@ -34,8 +35,12 @@ class Game:
                     p1.events.append(f"{p2.name} is another Werewolf! You are allied in this game.")
 
     def _post_game(self, winner: str):
-        for player in self.players:
-            player.update_memory(self.players, winner)
+        return
+        for player, _ in self.player_roles:
+            player.update_memory(
+                [(p.name, role) for p, role in self.player_roles if p.name != player.name], 
+                winner
+            )
 
     def get_players(self, role: str) -> List[Player]:
         return [player for player in self.players if player.__class__.__name__ == role]
